@@ -1,15 +1,22 @@
+import json
+
 import msal
 
-CLIENT_ID = "6ddd40b2-31e7-4cdb-a3d5-851c62d75b8a"
-CLIENT_SECRET = "4Ir8Q~4fHiIx6IHIVyvTzPkgHkSXNL0DGSyaObRX"
-AUTHORITY = "https://login.microsoftonline.com/common"  # Common for personal accounts
-REDIRECT_URI = "http://localhost"  # Same as the registered URI
-SCOPES = ["Files.ReadWrite.All"]
 
 class OneDriveTokenManager:
-    def __init__(self, client_id = CLIENT_ID, authority = AUTHORITY, scopes = SCOPES):
-        self.app = msal.PublicClientApplication(client_id, authority=authority)
-        self.scopes = scopes
+
+    def load_secrets(self, file_path):
+        with open(file_path, "r") as file:
+            secrets = json.load(file)
+            self.client_id = secrets["CLIENT_ID"]
+            #self.CLIENT_SECRET = secrets["CLIENT_SECRET"]
+            self.authority = secrets["AUTHORITY"]
+            #self.REDIRECT_URI = secrets["REDIRECT_URI"]
+            self.scopes = secrets["SCOPES"]
+        
+    def __init__(self, config_file_path):
+        self.load_secrets(config_file_path)
+        self.app = msal.PublicClientApplication(self.client_id, authority=self.authority)
 
     def get_access_token(self):
         result = None
