@@ -1,0 +1,26 @@
+2024-12-20 18:23:04,195 - INFO - general - Logging configured successfully.
+2024-12-20 18:23:04,196 - INFO - load_secrets - Secrets loaded from /Users/littlecapa/Downloads/OneDriveConfig.json.
+2024-12-20 18:23:04,283 - INFO - init token manager - Token manager initialized.
+2024-12-20 18:23:04,323 - INFO - get_access_token - Prompting user for interactive login.
+2024-12-20 18:23:04,325 - INFO - general - Open a browser on this device to visit: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=6ddd40b2-31e7-4cdb-a3d5-851c62d75b8a&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A65365&scope=Files.ReadWrite.All+offline_access+openid+profile&state=RCnuADPzNlZmwWfx&code_challenge=GqsMPhM8jLxl8YYsjqqrcJ8YYEmUUFH_PBIEYPwLURk&code_challenge_method=S256&nonce=c265148a6fe70b2d5a5e650beb0b6bb2027a5da4c87abbae9ca2ed49ef1e38b5&client_info=1
+2024-12-20 18:23:08,628 - INFO - get_access_token - Access token acquired successfully.
+2024-12-20 18:23:09,208 - INFO - general - Directory created: TestFolder
+2024-12-20 18:23:09,844 - INFO - general - File uploaded: scalable.txt to folder 66899B659FC7C342!171076
+2024-12-20 18:23:10,641 - INFO - general - File downloaded: scalable.txt to /Users/littlecapa/Downloads
+2024-12-20 18:23:11,416 - INFO - general - File deleted: scalable.txt
+2024-12-20 18:23:12,076 - INFO - general - Folder deleted: 66899B659FC7C342!171076
+2024-12-20 18:23:12,077 - INFO - general - Folder and contents deleted: 66899B659FC7C342!171076
+2024-12-20 18:23:12,077 - INFO - general - All OneDrive operations completed successfully.
+2024-12-20 18:25:23,163 - INFO - general - Logging configured successfully.
+2024-12-20 18:25:23,163 - INFO - load_secrets - Secrets loaded from /Users/littlecapa/Downloads/OneDriveConfig.json.
+2024-12-20 18:25:23,284 - INFO - init token manager - Token manager initialized.
+2024-12-20 18:25:23,325 - INFO - get_access_token - Prompting user for interactive login.
+2024-12-20 18:25:23,328 - INFO - general - Open a browser on this device to visit: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=6ddd40b2-31e7-4cdb-a3d5-851c62d75b8a&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A65405&scope=Files.ReadWrite.All+offline_access+openid+profile&state=wtpMoRZdlYKaGbgi&code_challenge=-SHZpml2wXe1Ksbf3kP46m4YDkCdnIr0Nc8gbTB7Z-c&code_challenge_method=S256&nonce=8021b9869d9e6d9b411c26071fabda3368008f358013aee41187a2aaf679609a&client_info=1
+2024-12-20 18:25:27,843 - INFO - get_access_token - Access token acquired successfully.
+2024-12-20 18:25:28,423 - INFO - general - Directory created: TestFolder with ID 66899B659FC7C342!171078
+2024-12-20 18:25:29,003 - INFO - general - File uploaded: scalable.txt to folder 66899B659FC7C342!171078
+2024-12-20 18:25:29,491 - INFO - general - File downloaded: scalable.txt to /Users/littlecapa/Downloads
+2024-12-20 18:25:30,542 - INFO - general - File deleted: scalable.txt
+2024-12-20 18:25:31,097 - INFO - general - Folder deleted: 66899B659FC7C342!171078
+2024-12-20 18:25:31,097 - INFO - general - Folder and contents deleted: 66899B659FC7C342!171078
+2024-12-20 18:25:31,097 - INFO - general - All OneDrive operations completed successfully.
