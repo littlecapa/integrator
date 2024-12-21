@@ -2,6 +2,8 @@ import json
 import logging
 import os
 
+from elasticsearch import Elasticsearch, helpers
+
 
 # Custom formatter to handle missing attributes gracefully
 class CustomFormatter(logging.Formatter):
@@ -20,6 +22,21 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_format)
         return formatter.format(record)
 
+
+# ELK Logging Handler
+class ElkLoggingHandler(logging.Handler):
+    def __init__(self, index_name, ip, port):
+        super().__init__()
+        self.index_name = index_name
+        self.es = Elasticsearch([{'host': ip, 'port': port}])
+    
+    def emit(self, record):
+        log_entry = self.format(record)
+        try:
+            # Index the log into Elasticsearch
+            self.es.index(index=self.index_name, document=json.loads(log_entry))
+        except Exception as e:
+            logging.error(f"Failed to send log to Elasticsearch: {e}")
 
 # Configure logging
 def configure_logging(log_file_name="integrator.log"):
@@ -67,3 +84,15 @@ def log_operation(level, message, object=None, operation=None, **kwargs):
     # Use dynamic level logging
     log_level = getattr(logging, level.upper(), logging.WARNING)
     logger.log(log_level, message, extra=extra)
+
+
+# Function to add ELK logging
+def add_elk_logging(index_name, ip, port):
+    elk_handler = ElkLoggingHandler(index_name, ip, port)
+    formatter = CustomFormatter()
+    elk_handler.setFormatter(formatter)
+    
+    # Add ELK handler to the logger
+    logging.getLogger().addHandler(elk_handler)
+    
+    logging.info(f"ELK logging enabled for index '{index_name}' at {ip}:{port}")

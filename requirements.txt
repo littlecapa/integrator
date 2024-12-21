@@ -6,6 +6,8 @@ charset-normalizer==3.3.2
 click==8.1.7
 cryptography==44.0.0
 dnspython==2.6.1
+elastic-transport==8.15.1
+elasticsearch==8.17.0
 email_validator==2.1.1
 fastapi==0.111.0
 fastapi-cli==0.0.4
