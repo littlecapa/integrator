@@ -9,11 +9,11 @@ from integrator.integrator.OneDriveTokenManager import OneDriveTokenManager
 configure_logging()
 logging.getLogger().setLevel(logging.INFO)
 
-def test_onedrive_operations():
+def test_onedrive_operations(file_path = "/Users/littlecapa/Downloads"):
     # Setup
-    file_path = os.getenv("TEST_FILE_PATH", "/Users/littlecapa/Downloads")
     config_path = os.path.join(file_path, "OneDriveConfig.json")
     token_manager = OneDriveTokenManager(config_path)
+    token_manager.load_secrets(config_path)
 
     try:
         access_token = token_manager.get_access_token()
@@ -24,25 +24,29 @@ def test_onedrive_operations():
         folder_name = "TestFolder"
         file_name = "scalable.txt"
 
-        # Test: Create directory
-        folder_data = OneDriveLib.create_directory(access_token, folder_name)
-        if not folder_data:
-            logging.error("Directory creation failed.")
-            return
+        # Initialize OneDriveLib
+        onedrive = OneDriveLib()
 
+        # Test: Create directory
+        folder_data = onedrive.create_directory(access_token, folder_name)
+        if not folder_data:
+            logging.error(f"Directory creation failed for folder '{folder_name}'.")
+            return
         folder_id = folder_data["id"]
 
         # Test: Upload file
-        upload_result = OneDriveLib.upload_file_to_directory(access_token, folder_id, file_path, file_name)
+        upload_result = onedrive.upload_file_to_directory(access_token, folder_id, file_path, file_name)
         if not upload_result:
-            logging.error("File upload failed.")
+            logging.error(f"File upload failed for file '{file_name}' in folder '{folder_name}'.")
             return
 
         # Test: Download file
-        OneDriveLib.download_file(access_token, folder_id, file_path, file_name)
+        download_destination = os.path.join(file_path, "DownloadedFiles")
+        os.makedirs(download_destination, exist_ok=True)
+        onedrive.download_file(access_token, folder_id, download_destination, file_name)
 
         # Test: Delete folder and contents
-        OneDriveLib.delete_folder_and_contents(access_token, folder_id)
+        onedrive.delete_folder_and_contents(access_token, folder_id)
 
         logging.info("All OneDrive operations completed successfully.")
 
