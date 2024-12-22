@@ -82,7 +82,7 @@ def log_operation(level, message, object=None, operation=None, **kwargs):
         message = f"{message} | Details: {json.dumps(kwargs)}"
 
     # Use dynamic level logging
-    log_level = getattr(logging, level.upper(), logging.WARNING)
+    log_level = getattr(logging, level.upper(), logging.INFO)
     logger.log(log_level, message, extra=extra)
 
 

@@ -26,6 +26,45 @@ class OneDriveLib:
         Generate the URL to access a folder.
         """
         return f"{self.base_url}items/{folder_id}"
+    
+    def get_folders(self, access_token: str, base_url: str = None) -> dict:
+        """
+        Recursively fetch all folders and subfolders in OneDrive starting from the base URL.
+        
+        Args:
+            access_token (str): Access token for authorization.
+            base_url (str): Base URL to start fetching folders. Defaults to the root directory.
+
+        Returns:
+            dict: A nested dictionary representing the folder structure.
+        """
+        base_url = base_url or self.base_url + "root/children"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        folder_structure = {}
+
+        try:
+            response = requests.get(base_url, headers=headers)
+            response.raise_for_status()
+            items = response.json().get("value", [])
+            
+            for item in items:
+                print(f"Item: {item}")
+                if item.get("folder"):  # Check if the item is a folder
+                    folder_name = item["name"]
+                    folder_url = item["id"]
+                    folder_structure[folder_name] = {
+                        "FolderURL": folder_url,
+                        "Subfolders": self.get_folders(access_token, folder_url + "/children"),
+                    }
+            
+            return folder_structure
+        except requests.exceptions.RequestException as e:
+            log_operation(
+                "error",
+                f"Error fetching folders: {str(e)}",
+                operation="get_folders",
+            )
+            return {}
 
     def create_directory(self, access_token: str, folder_name: str) -> dict:
         """

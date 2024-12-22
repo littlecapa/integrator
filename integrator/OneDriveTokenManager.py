@@ -25,6 +25,7 @@ class OneDriveTokenManager:
                 self.client_id = secrets.get("CLIENT_ID")
                 self.authority = secrets.get("AUTHORITY")
                 self.scopes = secrets.get("SCOPES", [])  # Default to an empty list if SCOPES is missing
+                self.base_folder_url = secrets.get("BASE_FOLDER_URL")
 
                 # Log the loading operation
                 log_operation(
@@ -34,7 +35,7 @@ class OneDriveTokenManager:
                     object=file_path,
                 )
 
-                if not self.client_id or not self.authority or not self.scopes:
+                if not self.client_id or not self.authority or not self.scopes or not self.base_folder_url:
                     raise ValueError("Missing required secrets: CLIENT_ID, AUTHORITY, or SCOPES.")
                 
         except (FileNotFoundError, json.JSONDecodeError) as e:
@@ -81,6 +82,15 @@ class OneDriveTokenManager:
                 object=config_file_path,
             )
             raise
+
+    def get_base_folder_url(self) -> Optional[str]:
+        """
+        Get the base folder URL for OneDrive operations.
+
+        Returns:
+            Optional[str]: Base folder URL or None if not set.
+        """
+        return self.base_folder_url
 
     def acquire_token_silent(self) -> Optional[dict]:
         """
