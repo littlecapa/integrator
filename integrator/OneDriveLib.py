@@ -3,6 +3,8 @@ import os
 import requests
 
 from integrator.integrator.logging_config import log_operation
+from integrator.integrator.OneLib import (get_headers, is_notebook,
+                                          list_all_attributes)
 
 
 class OneDriveLib:
@@ -27,6 +29,66 @@ class OneDriveLib:
         """
         return f"{self.base_url}items/{folder_id}"
     
+    def list_root_objects(self, access_token: str) -> list:
+        """List all objects in the OneDrive root folder."""
+        url = f"{self.base_url}/root/children"
+        try:
+            response = requests.get(url, headers=get_headers(access_token))
+            response.raise_for_status()
+            return response.json().get("value", [])
+        except requests.exceptions.RequestException as e:
+            log_operation(
+                "error",
+                f"Error fetching folder contents for ROOT Folder: {str(e)}",
+                operation="list_root_objects",
+            ) 
+            return []
+
+    def find_onenote_notebook(self, access_token, notebook_name: str):
+        """Find a OneNote notebook in the root folder by name."""
+        objects = self.list_root_objects(access_token)
+        for obj in objects:
+            log_operation(
+                    "info",
+                    f"Object found: {obj.get('name')} (ID: {obj.get('id')})",
+                    operation="find_onenote_notebook",
+                    object=notebook_name,
+                )
+            if obj.get("name") == notebook_name and is_notebook(obj):
+                log_operation(
+                    "info",
+                    f"Found Notebook: {notebook_name} (ID: {obj.get('id')} {list_all_attributes(obj)})",
+                    operation="find_onenote_notebook",
+                    object=notebook_name,
+                )
+                return obj
+        return None
+
+    def get_folder_content(self, access_token: str, folder_id: str) -> dict:
+        """
+        Fetch the contents of a folder from OneDrive.
+
+        Args:
+            access_token (str): The access token for authentication.
+            folder_id (str): The ID of the folder.
+
+        Returns:
+            dict: The contents of the folder.
+        """
+        url = f"https://graph.microsoft.com/v1.0/me/drive/items/{folder_id}/children"
+        try:
+            response = requests.get(url, headers=get_headers(access_token))
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            log_operation(
+                "error",
+                f"Error fetching folder contents for ID {folder_id}: {str(e)}",
+                operation="get_folder_contents",
+                object=folder_id,
+            )
+            return None
+
     def get_folders(self, access_token: str, base_url: str = None) -> dict:
         """
         Recursively fetch all folders and subfolders in OneDrive starting from the base URL.
@@ -38,25 +100,42 @@ class OneDriveLib:
         Returns:
             dict: A nested dictionary representing the folder structure.
         """
+        log_operation(
+                "info",
+                f"Start Folder: (URL: {base_url})",
+                operation="check directory",
+                object=base_url,
+            )
         base_url = base_url or self.base_url + "root/children"
-        headers = {"Authorization": f"Bearer {access_token}"}
+
         folder_structure = {}
 
         try:
-            response = requests.get(base_url, headers=headers)
+            response = requests.get(base_url, headers=get_headers(access_token))
             response.raise_for_status()
             items = response.json().get("value", [])
             
             for item in items:
-                print(f"Item: {item}")
                 if item.get("folder"):  # Check if the item is a folder
                     folder_name = item["name"]
-                    folder_url = item["id"]
+                    folder_url = self.get_folder_url(item["id"])
+                    log_operation(
+                            "info",
+                            f"Found Folder: {folder_name} (URL: {folder_url})",
+                            operation="found subdirectory",
+                            object=f"Name: {folder_name}, ID: {folder_url}",
+                        )
                     folder_structure[folder_name] = {
                         "FolderURL": folder_url,
                         "Subfolders": self.get_folders(access_token, folder_url + "/children"),
                     }
-            
+                else:
+                    log_operation(
+                            "info",
+                            f"No Folder: {item})",
+                            operation="found subdirectory",
+                            object=f"item: {item}",
+                        )
             return folder_structure
         except requests.exceptions.RequestException as e:
             log_operation(
@@ -71,14 +150,14 @@ class OneDriveLib:
         Create a new directory in the root of OneDrive.
         """
         url = f"{self.base_url}root/children"
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         data = {
             "name": folder_name,
             "folder": {},
             "@microsoft.graph.conflictBehavior": "rename",
         }
         try:
-            response = requests.post(url, json=data, headers=headers)
+            response = requests.post(url, json=data, headers=get_headers(access_token))
             response.raise_for_status()
             folder_id = response.json().get("id")
             log_operation(
@@ -111,10 +190,10 @@ class OneDriveLib:
             return None
 
         url = self.get_file_url(folder_id, file_name)
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         try:
             with open(os.path.join(file_path, file_name), "rb") as file_data:
-                response = requests.put(url, data=file_data, headers=headers)
+                response = requests.put(url, data=file_data, headers=get_headers(access_token))
             response.raise_for_status()
             file_id = response.json().get("id")
             log_operation(
@@ -138,9 +217,9 @@ class OneDriveLib:
         Download a file from OneDrive to the specified destination.
         """
         url = self.get_file_url(folder_id, file_name)
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         try:
-            response = requests.get(url, headers=headers, stream=True)
+            response = requests.get(url, headers=get_headers(access_token), stream=True)
             response.raise_for_status()
             with open(os.path.join(destination_path, file_name), "wb") as file:
                 for chunk in response.iter_content(chunk_size=8192):
@@ -164,9 +243,9 @@ class OneDriveLib:
         Delete a folder and all its contents from OneDrive.
         """
         url = self.get_folder_url(folder_id) + "/children"
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=get_headers(access_token))
             response.raise_for_status()
             files = response.json().get("value", [])
             for file in files:
@@ -193,9 +272,9 @@ class OneDriveLib:
         Delete a file from OneDrive.
         """
         url = f"{self.base_url}items/{file_id}"
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         try:
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=get_headers(access_token))
             response.raise_for_status()
             log_operation(
                 "info",
@@ -216,9 +295,9 @@ class OneDriveLib:
         Delete a folder from OneDrive.
         """
         url = self.get_folder_url(folder_id)
-        headers = {"Authorization": f"Bearer {access_token}"}
+        
         try:
-            response = requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=get_headers(access_token))
             response.raise_for_status()
             log_operation(
                 "info",

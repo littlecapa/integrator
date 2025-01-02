@@ -1,10 +1,16 @@
 import json
+import logging
 import os
 
+from integrator.integrator.logging_config import configure_logging
 from integrator.integrator.OneDriveLib import OneDriveLib
 from integrator.integrator.OneDriveTokenManager import OneDriveTokenManager
 from integrator.integrator.testlib import (get_default_config_path,
                                            get_default_testfile_folder)
+
+# Configure logging
+configure_logging()
+logging.getLogger().setLevel(logging.INFO)
 
 
 def dump_folder_structure_to_json(output_filename = "folder_structure.json"):

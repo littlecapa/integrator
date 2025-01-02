@@ -43,6 +43,7 @@ def configure_logging(log_file_name="integrator.log"):
     log_dir = os.path.join(os.path.dirname(__file__), "logs")
     os.makedirs(log_dir, exist_ok=True)
     log_file_path = os.path.join(log_dir, log_file_name)
+    print(f"Log File Folder: {log_file_path}")
 
     # Set up the logger
     logger = logging.getLogger()

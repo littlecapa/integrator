@@ -6,8 +6,19 @@ import msal
 
 from integrator.integrator.logging_config import log_operation
 
+REQUIRED_SCOPE = [
+    "Files.ReadWrite.All",
+    "Notes.ReadWrite.All",
+    "Notes.Create",
+    "User.Read",
+]
 
 class OneDriveTokenManager:
+
+    def is_valid_jwt(self, token: str) -> bool:
+        parts = token.split('.')
+        return len(parts) == 3
+
     def load_secrets(self, file_path: str) -> None:
         """
         Load client secrets from a JSON configuration file.
@@ -25,7 +36,17 @@ class OneDriveTokenManager:
                 self.client_id = secrets.get("CLIENT_ID")
                 self.authority = secrets.get("AUTHORITY")
                 self.scopes = secrets.get("SCOPES", [])  # Default to an empty list if SCOPES is missing
+
+                """
+                if not set(self.scopes).issuperset(set(REQUIRED_SCOPE)):
+                    log_operation(
+                        "error",
+                        "Scopes provided do not include all required permissions.",
+                        operation="get_access_token",
+                    )
+                    raise ValueError("Scopes provided do not include all required permissions.")
                 self.base_folder_url = secrets.get("BASE_FOLDER_URL")
+                """
 
                 # Log the loading operation
                 log_operation(
@@ -35,7 +56,7 @@ class OneDriveTokenManager:
                     object=file_path,
                 )
 
-                if not self.client_id or not self.authority or not self.scopes or not self.base_folder_url:
+                if not self.client_id or not self.authority or not self.scopes:
                     raise ValueError("Missing required secrets: CLIENT_ID, AUTHORITY, or SCOPES.")
                 
         except (FileNotFoundError, json.JSONDecodeError) as e:
@@ -101,6 +122,7 @@ class OneDriveTokenManager:
         """
         accounts = self.app.get_accounts()
         if accounts:
+            print(f"Scope: {self.scopes}")
             return self.app.acquire_token_silent(self.scopes, account=accounts[0])
         return None
 
@@ -135,6 +157,7 @@ class OneDriveTokenManager:
                     "info",
                     "Access token acquired successfully.",
                     operation="get_access_token",
+                    object=result
                 )
                 return result["access_token"]
             else:

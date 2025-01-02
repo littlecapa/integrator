@@ -1,0 +1,17 @@
+{
+    "REFERENCE": "https://medium.com/@jarisko/easiest-way-for-graph-api-with-personal-microsoft-account-an-onenote-example-e67ee336e7b5",
+    "CLIENT_ID": "8736c5f0-6ae7-46fb-936f-df6568408d2a",
+    "CLIENT_SECRET": "4Ir8Q~4fHiIx6IHIVyvTzPkgHkSXNL0DGSyaObRX",
+    "AUTHORITY": "https://login.microsoftonline.com/common",
+    "REDIRECT_URI": "http://localhost",
+    "AUTHENTIFICATION_URL": "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope_string}",
+    "BASE_FOLDER_URL_OLD": "https://onedrive.live.com/?id=66899B659FC7C342%21171081&cid=66899B659FC7C342",
+    "BASE_FOLDER_URL": "https://onedrive.live.com/?id=root&cid=66899B659FC7C342",
+    "SCOPES": [
+        "Files.ReadWrite.All",
+        "Notes.ReadWrite.All",
+        "Notes.Create",
+        "User.Read"
+    ],
+    "ACCESS_TOKEN": "EwCYA8l6BAAUbDba3x2OMJElkF7gJ4z/VbCPEz0AAY11CZlqGOjZw/RhernVhrBkCWGgFL4zrCBsjOJz24urEQahf5ZgYEhRw6PeQbDpfQ0DAwE+h433+6L8do2VVxXYRq7sDs6QE0s7wd94eVuwCuwmQtTC3l7A4UPBfuOzJF1ZrU5CJ9wPBOg+AU3OYNBJQp8LdnA9hdAd5xSNKOUYSvxKqy+5fKUBLujGnxN/6nN4cHWmhKFIdAn2DZRTfr4LLGXW+JMVhHJ505toJB6P0GSxpJscJYG/BWlTqjQ8xfGEOldZDHxYMJM4WSv6W92z00de3qhATg/fhavp5PgWS4x8kGXIZO55aCa3NOwbNuJyjlNSgxtQiOAdrSmVWGYQZgAAEG2hF1YgDYc1UbI8Ablw4MpgAgrLYOGMDbAGYxVKtxVyfMvHoP4L91Bf9w0R78S/EDlnFWfrbicwpDifxMi2cA3dBrZyltQTG0KZU3Njw8uEa8R7N+5ju5wmfrdQuNwsOqUBaN5Jv+/ExcLtBCT4aP62Xj/imn7QOYXJ7cEH3izIS4YAzG1Em1WvGLOGgHcN7PIqbK4X6/L/uaneO/Kn/kupTk98nnCNDUD2x2zwS14oRInKh+W/Umzh9UPW1Be8T95DF7T/ucy2dYqLwKZBNEPdPnRBPX/YN/yADDcEGmt/jxB9b3NdEPvU8C3f5ROZp6Ai88CrbY+lvY/ccnyw0xUs2kEl0Io8/oifMszhlTx2dc+A5MWIqCpsq/hDnEXr6096f6ritQU+bkfxjriOsUSRVkULCQiz7kzDIlmk3JsAkXUlJFBbQtL4wtN1jX5XX3CHILlCTWmq3gQa2d5UNKIfIg5WMMhbwYupGWT+FBb08jhm5lb6chUhtpTrIysoL6mg/RPJcSjV3hZSY0vNkGAIBPYtT4q0DlNGsqdRIIvGFb9IZml4eDCbTlvTv/+d4+7GROzQEEJAfS0HrRlNrJIwpJfIVfVxKewfEcZ3Fcsn/uBUrTgcoeTSO24vQoY73mGG5MAUFqXkXdc01OFUOb0b9fUlJuHeN6WePuidkUhuKQJz+96mwfmT1tk5BcU3nlpydRK3MzlWrOHCPG5VBD5tql9lKZ1icBAEJnv5+jSttb/acWej+ganigx3CgJnaSYgL4cgXKd7TJveR9tIENOcZ3vrlshmjAncLhjwVM2S4i4uKqsN03IXUqUL/JtQNFZDlQI="
+}
